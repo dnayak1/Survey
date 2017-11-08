@@ -64,7 +64,8 @@ exports.survey = function(req,res){
           "message": message
         });
       }else{
-        var email = req.body.email;
+        console.log(decoded.email);
+        var email = decoded.email;
         var survey = req.body.survey;
         connection.query('UPDATE patient SET survey = ? where email = ?',[survey,email], function (error, results, fields){
           if (error) {
