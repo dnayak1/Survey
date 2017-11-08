@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Patients</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+
+    $( document ).ready(function() {
+      console.log( "ready!" );
+      $.ajax({
+             url: '/patient',
+             data: {
+                format: 'json'
+             },
+             error: function() {
+                $('body').html('<p>An error has occurred</p>');
+             },
+             dataType: 'json',
+             success: function(dataSet) {
+                //console.log(dataSet);
+                var patients = [];
+                for (var i = 0; i < dataSet.patients.length; i++) {
+                  var survey = "<span class='glyphicon glyphicon-ok-sign'></span>";
+                  if(dataSet.patients[i]["survey"] == null)
+                  {
+                    survey = "<span class='glyphicon glyphicon-remove'></span>";
+                  }
+                  var patient = [dataSet.patients[i]["age"],dataSet.patients[i]["email"],dataSet.patients[i]["name"],survey];
+                  patients.push(patient);
+                }
+                $('#table-patients').DataTable( {
+                  data: patients,
+                  columns: [
+                  { title: "age" },
+                  { title: "email" },
+                  { title: "name" },
+                  { title: "survey" }
+                ]
+            } ).on('bind',function () {
+                console.log("inside bind");
+              });
+             },
+             type: 'GET'
+          });
+    });
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <table id="table-patients" class="table-responsive"></table>
+    <div class="inner cover">
+       <form method="GET" action="/newPatient">
+         <div class="col-xs-4">
+            <button type="submit" class="btn btn-primary btn-sx" type="button">Create New Patient</button>
+        </div>
+       </form>
+   </div>
+  </body>
+</html>
