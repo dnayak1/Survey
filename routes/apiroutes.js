@@ -29,7 +29,8 @@ exports.login = function(req,res){
               var user = {
                 "name":results[0].name,
                 "email":results[0].email,
-                "age":results[0].age
+                "age":results[0].age,
+                "gender":results[0].gender
               };
               var token = jwt.sign(user, 'superSecret');
               res.send({

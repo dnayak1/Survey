@@ -13,7 +13,7 @@ exports.patient = function(req,res){
 
   sess = req.session;
   if(sess.email){
-    connection.query('SELECT age,email,name,survey FROM patient', function (error, results, fields) {
+    connection.query('SELECT age,email,name,survey,gender FROM patient', function (error, results, fields) {
     if (error) {
       res.redirect("/error");
     }else{
@@ -41,6 +41,7 @@ exports.register = function(req,res){
     var email = req.body.email;
     var age = req.body.age;
     var password = req.body.password;
+    var gender = req.body.gender;
     console.log(name);
     console.log(email);
     console.log(password);
@@ -49,7 +50,7 @@ exports.register = function(req,res){
       if (error) {
         res.redirect("/error");
       }else{
-        connection.query('INSERT INTO patient(name,email,age) values(?,?,?)',[name,email,age], function (error, results, fields){
+        connection.query('INSERT INTO patient(name,email,age,gender) values(?,?,?,?)',[name,email,age,gender], function (error, results, fields){
           if (error) {
             res.redirect("/error");
           }else{
