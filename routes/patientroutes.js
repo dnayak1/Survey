@@ -73,14 +73,17 @@ exports.surveyofpatient = function(req,res){
   sess = req.session;
   if(sess.email){
     var email = req.body.email;
-    connection.query('SELECT survey FROM patient where email = ?',[email] , function (error, results, fields) {
+    connection.query('SELECT survey,gender FROM patient where email = ?',[email] , function (error, results, fields) {
     if (error) {
       res.redirect("/error");
     }else{
       if(results.length > 0){
         console.log(results);
+        console.log(results[0].gender);
+        console.log(results[0].survey);
         res.send({
-          "patients":results
+          "patients":results[0].survey,
+          "gender":results[0].gender
         })
       }
       else{

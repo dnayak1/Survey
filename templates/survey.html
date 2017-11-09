@@ -54,9 +54,9 @@
              },
              dataType: 'json',
              success: function(dataSet) {
-              if(dataSet.patients[0]["survey"] != "")
+              if(dataSet.patients != "")
               {
-                      var dataScoreAndSurvey = dataSet.patients[0]["survey"].split('**');
+                      var dataScoreAndSurvey = dataSet.patients.split('**');
                       var ques = dataScoreAndSurvey[0].split('%');
                       var survey = [];
                       for (var i = 1; i < ques.length; i++) {
@@ -67,7 +67,58 @@
                       var allscores = dataScoreAndSurvey[1].split('&&');
                       var scores = [];
                       for (var i = 1; i < allscores.length; i++) {
-                        scores.push(new Array(allscores[i].split(':')[0],allscores[i].split(':')[1].replace(',','')));
+                        var adherentScore = allscores[i].split(':')[1].replace(',','');
+                        var checkAdherent = allscores[i].split(':')[0];
+                        var isAdherent = "";
+                        switch(checkAdherent){
+                          case "AlcoholScore":
+                            if(adherentScore<=14 && dataSet.gender == "Male"){
+                              isAdherent = "Adherent";
+                            }else if (adherentScore<=7 && dataSet.gender == "Female"){
+                              isAdherent = "Adherent";
+                            }else{
+                              isAdherent = "Not Adherent";
+                            }
+                            break;
+                          case "DietScore":
+                            if(adherentScore<=32){
+                              isAdherent = "Low quality";
+                            }else if(adherentScore>32 && adherentScore<=52){
+                              isAdherent = "Medium quality";
+                            }else{
+                              isAdherent = "Adherent"
+                            }
+                            break;
+                          case "MedicationScore":
+                            if(adherentScore<21){
+                              isAdherent = "Not Adherent";
+                            }else{
+                              isAdherent = "Adherent";
+                            }
+                            break;
+                          case "PhysicalActivityScore":
+                            if(adherentScore<8){
+                              isAdherent = "Not Adherent";
+                            }else{
+                              isAdherent = "Adherent";
+                            }
+                            break;
+                          case "SmokingScore":
+                            if(adherentScore>0){
+                              isAdherent = "Not Adherent";
+                            }else{
+                              isAdherent = "Adherent";
+                            }
+                            break;
+                          case "WeightManagementScore":
+                            if(adherentScore>=40){
+                              isAdherent = "Adherent";
+                            }else{
+                              isAdherent = "Not Adherent";
+                            }
+                            break;
+                        }
+                        scores.push(new Array(allscores[i].split(':')[0],allscores[i].split(':')[1].replace(',',''),isAdherent));
                       }
                       $('#table-patients').DataTable( {
                         data: survey,
@@ -80,7 +131,8 @@
                       data: scores,
                       columns: [
                       { title: "Score Factor" },
-                      { title: "Score" }
+                      { title: "Score" },
+                      { title: "Adherent"}
                     ]
                   });
               }
