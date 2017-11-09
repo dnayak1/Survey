@@ -32,7 +32,7 @@
 
     </style>
     <script type="text/javascript">
-
+    
     $( document ).ready(function() {
       console.log( "ready!" );
       $.ajax({
@@ -50,7 +50,11 @@
                 for (var i = 0; i < dataSet.patients.length; i++) {
                   var queryString = "<a href='/survey?email="+dataSet.patients[i]["email"]+"'>"
                   var survey = queryString + " " + "<span class='glyphicon glyphicon-ok-sign'></span><a>";
-                  if(dataSet.patients[i]["survey"] == null)
+                  if(dataSet.patients[i]["survey"] == null )
+                  {
+                    survey = "<span class='glyphicon glyphicon-remove'></span>";
+                  }
+                  if(dataSet.patients[i]["survey"] == "" )
                   {
                     survey = "<span class='glyphicon glyphicon-remove'></span>";
                   }
@@ -65,8 +69,6 @@
                   { title: "name" },
                   { title: "survey" }
                 ]
-            } ).on('bind',function () {
-                console.log("inside bind");
               });
              },
              type: 'GET'
