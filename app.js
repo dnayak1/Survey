@@ -35,14 +35,20 @@ app.get('/newPatient',function(req,res){
   res.sendFile('newPatient.html',{'root':__dirname + '/templates'})
 })
 
+app.get('/survey',function(req,res){
+  res.sendFile('survey.html',{'root':__dirname + '/templates'})
+})
+
+
 app.post('/login', login.login);
 app.get('/patient',patient.patient);
+app.post('/surveyofpatient',patient.surveyofpatient);
 app.post('/register', patient.register);
 app.post('/loginapi',api.login);
 app.post('/surveyapi',api.survey);
 
 
 // Binding express app to port 5000
-app.listen(5000,function(){
+app.listen(4000,function(){
     console.log('Node server running @ http://localhost:5000')
 });

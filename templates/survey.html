@@ -36,40 +36,45 @@
     $( document ).ready(function() {
       console.log( "ready!" );
       $.ajax({
-             url: '/patient',
+             url: '/surveyofpatient',
              data: {
-                format: 'json'
+                format: 'json',
+                email:'patient1@gmail.com'
              },
              error: function() {
                 $('body').html('<p>An error has occurred</p>');
              },
              dataType: 'json',
              success: function(dataSet) {
-                //console.log(dataSet);
-                var patients = [];
-                for (var i = 0; i < dataSet.patients.length; i++) {
-                  var queryString = "<a href='/survey?email="+dataSet.patients[i]["email"]+"'>"
-                  var survey = queryString + " " + "<span class='glyphicon glyphicon-ok-sign'></span><a>";
-                  if(dataSet.patients[i]["survey"] == null)
-                  {
-                    survey = "<span class='glyphicon glyphicon-remove'></span>";
-                  }
-                  var patient = [dataSet.patients[i]["age"],dataSet.patients[i]["email"],dataSet.patients[i]["name"],survey];
-                  patients.push(patient);
-                }
-                $('#table-patients').DataTable( {
-                  data: patients,
-                  columns: [
-                  { title: "age" },
-                  { title: "email" },
-                  { title: "name" },
-                  { title: "survey" }
-                ]
-            } ).on('bind',function () {
-                console.log("inside bind");
-              });
+              var dataScoreAndSurvey = dataSet.patients[0]["survey"].split('**');
+              var ques = dataScoreAndSurvey[0].split('%');
+              var survey = [];
+              for (var i = 1; i < ques.length; i++) {
+                var res = ques[i].split('#');
+                survey.push(new Array(res[0],res[1]));
+              }
+              console.log(survey);
+              var allscores = dataScoreAndSurvey[1].split('&&');
+              var scores = [];
+              for (var i = 1; i < allscores.length; i++) {
+                scores.push(new Array(allscores[i].split(':')[0],allscores[i].split(':')[1].replace(',','')));
+              }
+              $('#table-patients').DataTable( {
+                data: survey,
+                columns: [
+                { title: "Question" },
+                { title: "Answer" }
+              ]
+            });
+            $('#table-score').DataTable( {
+              data: scores,
+              columns: [
+              { title: "Score Factor" },
+              { title: "Score" }
+            ]
+          });
              },
-             type: 'GET'
+             type: 'POST'
           });
     });
 
@@ -80,13 +85,9 @@
   <body>
     <div class="table-container">
       <table id="table-patients" class="table table-striped table-bordered table-responsive"></table>
-      <div class="inner cover">
-         <form method="GET" action="/newPatient">
-           <div class="col-xs-4">
-              <button type="submit" class="btn btn-primary btn-sx" type="button">Create New Patient</button>
-          </div>
-         </form>
-     </div>
+    </div>
+    <div class="table-container">
+      <table id="table-score" class="table table-striped table-bordered table-responsive"></table>
     </div>
 
   </body>

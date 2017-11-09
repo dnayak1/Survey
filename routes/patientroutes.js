@@ -65,3 +65,31 @@ exports.register = function(req,res){
   }
 
 };
+
+exports.surveyofpatient = function(req,res){
+
+  console.log(req.body);
+  sess = req.session;
+  if(sess.email){
+    var email = req.body.email;
+    connection.query('SELECT survey FROM patient where email = ?',[email] , function (error, results, fields) {
+    if (error) {
+      res.redirect("/error");
+    }else{
+      if(results.length > 0){
+        console.log(results);
+        res.send({
+          "patients":results
+        })
+      }
+      else{
+        res.redirect("/error");
+      }
+    }
+    });
+  }
+  else {
+    res.redirect("/showSignInPage");
+  }
+
+};
